@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package chord;
+
+option go_package = "/pb";
+
+message Key {
+    int32 key = 1;
+}
+
+message KeyMap{
+    map<int32, string> hash_table    = 1;
+}
+
+message ResponseNode{
+    string ip_addr = 1;
+    string port = 2;
+    bool found_flag = 3;
+}
+
+message Node_ip{
+    int32 id = 1;
+    string ip_addr = 2;
+    string port = 3;
+}
+
+message Empty{}
+
+message Node{
+    int32 id = 1;
+	Node_ip curr_ip = 2;
+	Node_ip succ_ip = 3;
+	Node_ip pred_ip = 4;
+    map<int32, string> hash_table    = 5;
+}
+
+message id_m{
+    int32 id = 1;
+    int32 m = 2;
+}
+
+message id{
+    int32 id = 1;
+    bool lookupLogFlag = 2;
+}
+
+
+service KeyService{
+    rpc RPCLookup(Key) returns (Node_ip);
+    rpc RPCRegisterNode(Node_ip) returns (Node_ip);
+    rpc RPCGetSuccessor(Empty) returns (Node_ip);
+    rpc RPCClosestPrecedingFinger(id_m) returns (Node_ip);
+    rpc RPCFindSuccessor(id) returns (Node_ip);
+    rpc RPCGetPredecessor(Empty) returns (Node_ip);
+    rpc RPCNotify(Node_ip) returns (Empty);
+    rpc RPCDepart(Empty) returns (Empty);
+    rpc RPCNotifySucc(Node_ip) returns (Empty);
+    rpc RPCNotifyPred(Node_ip) returns (Empty);
+    rpc RPCRemoveNode(Node_ip) returns (Empty);
+    rpc RPCAddkey(Key) returns (Empty);
+    rpc RPCGetKeys(Key) returns (KeyMap);
+    rpc RPCTransferKeys(KeyMap) returns (Empty);
+}
+
